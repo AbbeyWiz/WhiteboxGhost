@@ -117,7 +117,7 @@ function activateTheme(activeTheme) {
 // Uses the URL to detect whether this response should be an admin response
 // This is used to ensure the right content is served, and is not for security purposes
 function manageAdminAndTheme(req, res, next) {
-    res.isAdmin = req.url.lastIndexOf(config.paths().subdir + '/ghost/', 0) === 0;
+    res.isAdmin = req.url.lastIndexOf(config.paths().subdir + config().adminRoot + '/', 0) === 0;
 
     if (res.isAdmin) {
         expressServer.enable('admin');
@@ -148,7 +148,7 @@ function redirectToSignup(req, res, next) {
     /*jslint unparam:true*/
     api.users.browse().then(function (users) {
         if (users.length === 0) {
-            return res.redirect(config.paths().subdir + '/ghost/signup/');
+            return res.redirect(config.paths().subdir + config().adminRoot + '/signup/');
         }
         next();
     }).otherwise(function (err) {
@@ -224,7 +224,7 @@ module.exports = function (server, dbHash) {
     expressServer.use(checkSSL);
 
     // Admin only config
-    expressServer.use(subdir + '/ghost', middleware.whenEnabled('admin', express['static'](path.join(corePath, '/client/assets'))));
+    expressServer.use(subdir + config().adminRoot, middleware.whenEnabled('admin', express['static'](path.join(corePath, '/client/assets'))));
 
     // Theme only config
     expressServer.use(subdir, middleware.whenEnabled(expressServer.get('activeTheme'), middleware.staticTheme()));
@@ -235,12 +235,12 @@ module.exports = function (server, dbHash) {
     expressServer.use(express.json());
     expressServer.use(express.urlencoded());
 
-    expressServer.use(subdir + '/ghost/upload/', middleware.busboy);
-    expressServer.use(subdir + '/ghost/api/v0.1/db/', middleware.busboy);
+    expressServer.use(subdir + config().adminRoot + '/upload/', middleware.busboy);
+    expressServer.use(subdir + config().adminROot + '/api/v0.1/db/', middleware.busboy);
 
     // Session handling
     cookie = {
-        path: subdir + '/ghost',
+        path: subdir + config().adminRoot,
         maxAge: 12 * oneHour
     };
 

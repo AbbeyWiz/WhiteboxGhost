@@ -123,6 +123,10 @@ coreHelpers.url = function (options) {
     });
 };
 
+coreHelpers.adminRoot = function () {
+    return config().adminRoot;
+};
+
 // ### Asset helper
 //
 // *Usage example:*
@@ -139,7 +143,7 @@ coreHelpers.asset = function (context, options) {
 
     if (!context.match(/^shared/)) {
         if (isAdmin) {
-            output += 'ghost/';
+            output += config().adminRoot.substring(1) + '/';
         } else {
             output += 'assets/';
         }
@@ -265,6 +269,10 @@ coreHelpers.fileStorage = function (context, options) {
         return config().fileStorage.toString();
     }
     return "true";
+};
+
+coreHelpers.ghostJSGlobals = function() {
+    return "<script>var ghostAdminRoot = '" + config().adminRoot + "';</script>";
 };
 
 coreHelpers.ghostScriptTags = function () {
@@ -642,9 +650,13 @@ registerHelpers = function (adminHbs) {
 
     registerAdminHelper('ghostScriptTags', coreHelpers.ghostScriptTags);
 
+    registerAdminHelper('ghostJSGlobals', coreHelpers.ghostJSGlobals);
+
     registerAdminHelper('fileStorage', coreHelpers.fileStorage);
 
     registerAsyncAdminHelper('url', coreHelpers.url);
+
+    registerAdminHelper('adminRoot', coreHelpers.adminRoot);
 
 };
 

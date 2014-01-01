@@ -4,11 +4,11 @@
 
     function ghostPaths() {
         var path = window.location.pathname,
-            subdir = path.substr(0, path.search('/ghost/'));
+            subdir = path.substr(0, path.search(window.ghostAdminRoot + '/'));
 
         return {
             subdir: subdir,
-            apiRoot: subdir + '/ghost/api/v0.1'
+            apiRoot: subdir + ghostAdminRoot + '/api/v0.1'
         };
     }
 
@@ -61,7 +61,7 @@
         Backbone.history.start({
             pushState: true,
             hashChange: false,
-            root: Ghost.paths.subdir + '/ghost'
+            root: Ghost.paths.subdir + ghostAdminRoot
         });
     };
 

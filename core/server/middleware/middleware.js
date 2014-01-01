@@ -27,7 +27,8 @@ var middleware = {
     // We strip /ghost/ out of the redirect parameter for neatness
     auth: function (req, res, next) {
         if (!req.session.user) {
-            var reqPath = req.path.replace(/^\/ghost\/?/gi, ''),
+            var replaceRegex = new RegExp("^\\" + config().adminRoot + "\\/?", "gi"),
+                reqPath = req.path.replace(replaceRegex, ''),
                 redirect = '',
                 msg;
 
@@ -45,7 +46,7 @@ var middleware = {
                     }
                     redirect = '?r=' + encodeURIComponent(reqPath);
                 }
-                return res.redirect(config.paths().subdir + '/ghost/signin/' + redirect);
+                return res.redirect(config.paths().subdir + config().adminRoot + '/signin/' + redirect);
             });
         }
         next();
@@ -67,7 +68,7 @@ var middleware = {
     // Login and signup forms in particular
     redirectToDashboard: function (req, res, next) {
         if (req.session.user) {
-            return res.redirect(config.paths().subdir + '/ghost/');
+            return res.redirect(config.paths().subdir + config().adminRoot);
         }
 
         next();

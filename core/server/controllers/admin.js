@@ -40,6 +40,11 @@ function setSelected(list, name) {
         item.selected = key === name;
     });
     return list;
+};
+
+// See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+function escapeRegexp(string) {
+    return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
 }
 
 adminControllers = {
@@ -86,7 +91,7 @@ adminControllers = {
                 req.session.regenerate(function (err) {
                     if (!err) {
                         req.session.user = user.id;
-                        var redirect = config.paths().subdir + '/ghost/';
+                        var redirect = config.paths().subdir + config().adminRoot + '/';
                         if (req.body.redirect) {
                             redirect += decodeURIComponent(req.body.redirect);
                         }
@@ -154,7 +159,7 @@ adminControllers = {
                         if (req.session.user === undefined) {
                             req.session.user = user.id;
                         }
-                        res.json(200, {redirect: config.paths().subdir + '/ghost/'});
+                        res.json(200, {redirect: config.paths().subdir + config().adminRoot + '/'});
                     }
                 });
             });
@@ -175,7 +180,7 @@ adminControllers = {
 
         api.users.generateResetToken(email).then(function (token) {
             var siteLink = '<a href="' + config().url + '">' + config().url + '</a>',
-                resetUrl = config().url.replace(/\/$/, '') +  '/ghost/reset/' + token + '/',
+                resetUrl = config().url.replace(/\/$/, '') +  config().adminRoot + '/reset/' + token + '/',
                 resetLink = '<a href="' + resetUrl + '">' + resetUrl + '</a>',
                 message = {
                     to: email,
@@ -196,7 +201,7 @@ adminControllers = {
             };
 
             return api.notifications.add(notification).then(function () {
-                res.json(200, {redirect: config.paths().subdir + '/ghost/signin/'});
+                res.json(200, {redirect: config.paths().subdir + config().adminRoot + '/signin/'});
             });
 
         }, function failure(error) {
@@ -232,7 +237,7 @@ adminControllers = {
             errors.logError(err, 'admin.js', "Please check the provided token for validity and expiration.");
 
             return api.notifications.add(notification).then(function () {
-                res.redirect(config.paths().subdir + '/ghost/forgotten');
+                res.redirect(config.paths().subdir + config().adminRoot + '/forgotten');
             });
         });
     },
@@ -250,7 +255,7 @@ adminControllers = {
             };
 
             return api.notifications.add(notification).then(function () {
-                res.json(200, {redirect: config.paths().subdir + '/ghost/signin/'});
+                res.json(200, {redirect: config.paths().subdir + config().adminRoot + '/signin/'});
             });
         }).otherwise(function (err) {
             // TODO: Better error message if we can tell whether the passwords didn't match or something
@@ -268,7 +273,7 @@ adminControllers = {
             };
 
         return api.notifications.add(notification).then(function () {
-            res.redirect(config.paths().subdir + '/ghost/signin/');
+            res.redirect(config.paths().subdir + config().adminRoot + '/signin/');
         });
     },
     'index': function (req, res) {
@@ -303,7 +308,7 @@ adminControllers = {
         // TODO: Centralise list/enumeration of settings panes, so we don't
         // run into trouble in future.
         var allowedSections = ['', 'general', 'user'],
-            section = req.url.replace(/(^\/ghost\/settings[\/]*|\/$)/ig, '');
+            section = req.url.replace(new RegExp("(^" + escapeRegexp(config().adminRoot) + "\/settings[\/]*|\/$)", "ig"), '');
 
         if (allowedSections.indexOf(section) < 0) {
             return next();

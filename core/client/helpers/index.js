@@ -33,6 +33,10 @@
         return Ghost.paths.subdir;
     });
 
+    Handlebars.registerHelper('adminRoot', function () {
+        return window.ghostAdminRoot;
+    });
+
     Handlebars.registerHelper('asset', function (context, options) {
         var output = '',
             isAdmin = options && options.hash && options.hash.ghost;
