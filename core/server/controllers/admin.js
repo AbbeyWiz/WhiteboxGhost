@@ -2,6 +2,7 @@ var config        = require('../config'),
     _             = require('underscore'),
     path          = require('path'),
     when          = require('when'),
+    OAuth         = require('oauth').OAuth,
     api           = require('../api'),
     mailer        = require('../mail'),
     errors        = require('../errorHandling'),
@@ -313,6 +314,48 @@ adminControllers = {
             bodyClass: 'settings',
             adminNav: setSelected(adminNavbar, 'settings')
         });
+    },
+    'authorizeTwitter': function (req, res, next) {
+        var oauth,
+            oa = new OAuth(
+                "https://api.twitter.com/oauth/request_token",
+                "https://api.twitter.com/oauth/access_token",
+                config().twitter.consumerKey,
+                config().twitter.consumerSecret,
+                "1.0",
+                config().url + config.paths().subdir + "/ghost/twitter/callback/",
+                "HMAC-SHA1"
+            );
+        if (req.session.oauth) {
+            req.session.oauth.verifier = req.query.oauth_verifier;
+            oauth = req.session.oauth;
+
+            oa.getOAuthAccessToken(oauth.token, oauth.token_secret, oauth.verifier,
+                function (error, oauth_access_token, oauth_access_token_secret) {
+                    if (error) {
+                        console.log(error);
+                        /* This happens if the user denys the request */
+                        api.notifications.add({
+                            type: 'error',
+                            message: "Unable to authenticate Twitter user.",
+                            status: 'persistent',
+                            id: 'ghost-twitter-authfailure'
+                        });
+
+                        res.redirect(config.paths().subdir + "/ghost/settings/general");
+
+                    } else {
+                        req.session.oauth.access_token = oauth_access_token;
+                        req.session.oauth.access_token_secret = oauth_access_token_secret;
+                        api.settings.edit('twitterAccessTokenKey', oauth_access_token);
+                        api.settings.edit('twitterAccessTokenSecret', oauth_access_token_secret);
+                        res.redirect(config.paths().subdir + "/ghost/settings/general");
+                    }
+                }
+                );
+        } else {
+            next(new Error("you're not supposed to be here."));
+        }
     },
     'debug': { /* ugly temporary stuff for managing the app before it's properly finished */
         index: function (req, res) {

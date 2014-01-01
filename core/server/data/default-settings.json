@@ -55,6 +55,12 @@
                 "regex": "(:id|:slug)",
                 "notContains": "/ghost/"
             }
+        },
+        "twitterAccessTokenKey": {
+            "defaultValue": ""
+        },
+        "twitterAccessTokenSecret": {
+            "defaultValue": ""
         }
     },
     "theme": {

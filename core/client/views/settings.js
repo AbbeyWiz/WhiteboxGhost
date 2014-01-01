@@ -149,7 +149,9 @@
         events: {
             'click .button-save': 'saveSettings',
             'click .js-modal-logo': 'showLogo',
-            'click .js-modal-cover': 'showCover'
+            'click .js-modal-cover': 'showCover',
+            'click #enableTwitter': 'enableTwitter',
+            'click #disableTwitter': 'disableTwitter'
         },
 
         saveSettings: function () {
@@ -238,6 +240,19 @@
             this.$('#permalinks').prop('checked', this.model.get('permalinks') === '/:slug/' ? false : true);
             this.$('.js-drop-zone').upload();
             Settings.Pane.prototype.afterRender.call(this);
+        },
+        enableTwitter: function () {
+            window.location = Ghost.paths.subdir + '/ghost/auth/twitter';
+        },
+        disableTwitter: function () {
+            var self = this;
+            this.model.save({
+                twitterAccessTokenKey: "",
+                twitterAccessTokenSecret: ""
+            }, {
+                success: this.saveSuccess,
+                error: this.saveError
+            }).then(function () { self.render(); });
         }
     });
 
