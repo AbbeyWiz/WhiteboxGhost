@@ -15,6 +15,17 @@ Each feature is implemented as a branch forked from the upstream [master](https:
 This allows the features to be merged into your local fork independently. The master branch merges
 all of the feature branches.
 
+It should be noted that there has been [some discussion](https://github.com/TryGhost/Ghost/issues/1474)
+regarding an App (aka plug-in) framework for Ghost. This would seem like a logical way to implement the Twitter
+functionality in particular. But unfortunately the app framework isn't at a stage to make it a reality for a feature
+like the Twitter integration. The Twitter integration would require the following from the Ghost App framework:
+
+* Ability to add fields to database schema
+* Ability to add routes for OAuth callbacks
+* Ability to add settings (settings are used to store the access token)
+* Ability to add fields the system settings UI
+* Ability to add custom logic when posts are created or updated
+
 ### AdminRoot branch
 
 This branch provides the ability to configure the location of the admin pages in Ghost. See the discussion of this
