@@ -33,6 +33,28 @@ adminRoot: '/dashboard';
 }
 `
 
+### updatetwitter branch
+
+This branch provides a feature which allow administrators to provide a twitter account they want to update when a new
+post is published. It keeps marks a post as tweeted in the DB to prevent posts from being tweeted multiple times.
+
+The application's consumer key and secret, which are provided when registering your instance of Ghost with Twitter,
+are provided in the configuration file such as:
+
+`
+{
+...
+twitter: {
+            consumerKey: '',
+            consumerSecret: ''
+        }
+...
+}
+`
+
+A button is added to the admin pages which allows the user to "Enable Twitter." This allows the user to specify which
+Twitter account to post updates to.
+
 ## Getting Involved
 
 Want to report a bug, request a feature, or help us build or translate Ghost? Check out our in depth guide to [Contributing to Ghost](https://github.com/TryGhost/Ghost/blob/master/CONTRIBUTING.md). We need all the help we can get! You can also join in with our [community](https://github.com/TryGhost/Ghost#community) to keep up-to-date and meet other Ghosters.
