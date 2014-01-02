@@ -6,6 +6,15 @@ Visit the project's website at <http://ghost.org>!
 
 Full documentation is available at <http://docs.ghost.org>.
 
+## About this fork
+
+This is a fork which contains changes to the official Ghost core application which have not been accepted as pull
+requests. These are "scratch an itch" type features that [I](http://github.com/baus) wanted in the application.
+
+Each feature is implemented as a branch forked from the upstream [master](https://github.com/TryGhost/Ghost/).
+This allows the features to be merged into your local fork independently. The master branch merges
+all of the feature branches.
+
 ### AdminRoot branch
 
 This branch provides the ability to configure the location of the admin pages in Ghost. See the discussion of this
