@@ -34,7 +34,7 @@
     });
 
     Handlebars.registerHelper('adminRoot', function () {
-        return window.ghostAdminRoot;
+        return Ghost.paths.adminRoot;
     });
 
     Handlebars.registerHelper('asset', function (context, options) {
@@ -45,7 +45,7 @@
 
         if (!context.match(/^shared/)) {
             if (isAdmin) {
-                output += 'ghost/';
+                output += Ghost.paths.adminRoot.substr(1) + '/';
             } else {
                 output += 'assets/';
             }

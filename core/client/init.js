@@ -8,7 +8,8 @@
 
         return {
             subdir: subdir,
-            apiRoot: subdir + ghostAdminRoot + '/api/v0.1'
+            apiRoot: subdir + ghostAdminRoot + '/api/v0.1',
+            adminRoot: ghostAdminRoot
         };
     }
 
@@ -61,7 +62,7 @@
         Backbone.history.start({
             pushState: true,
             hashChange: false,
-            root: Ghost.paths.subdir + ghostAdminRoot
+            root: Ghost.paths.subdir + Ghost.paths.adminRoot
         });
     };
 
