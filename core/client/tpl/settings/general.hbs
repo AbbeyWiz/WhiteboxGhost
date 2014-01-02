@@ -71,6 +71,17 @@
                 <p>Select a theme for your blog</p>
             </div>
 
+            <div class="form-group">
+                <label for="enableTwitter">Twitter</label>
+                {{#if twitterAccessTokenKey}}
+                    <button id="disableTwitter" name="general[disableTwitter]" type="button" class="button-delete">Disable Twitter</button>
+                    <p>Disable updating a Twitter account when a new article has been published.</p>
+                {{else}}
+                    <button id="enableTwitter" name="general[enableTwitter]" type="button" class="button-add">Enable Twitter</button>
+                    <p>Enable updating a Twitter account when a new article has been published.</p>
+                {{/if}}
+            </div>
+
         </fieldset>
     </form>
 </section>

@@ -1,13 +1,46 @@
 var when                   = require('when'),
     _                      = require('underscore'),
+    Ntwitter               = require('ntwitter'),
     dataProvider           = require('../models'),
     permissions            = require('../permissions'),
     canThis                = permissions.canThis,
     filteredUserAttributes = require('./users').filteredAttributes,
+    settings               = require('./settings'),
+    config                 = require('../config'),
     posts;
 
 // ## Posts
 posts = {
+    tweetPost: function tweetPost(postData) {
+        var twitterKey,
+            twitterSecret,
+            twitter,
+            deferred = when.defer();
+        if (postData.get("status") === "published" && !postData.get("tweeted")) {
+            return when(settings.read('twitterAccessTokenKey')).then(function (key) {
+                // we already ran this, chill
+                twitterKey = key.value;
+                return settings.read("twitterAccessTokenSecret");
+            }).then(function (secret) {
+                twitterSecret = secret.value;
+                twitter = new Ntwitter({
+                    consumer_key: config().twitter.consumerKey,
+                    consumer_secret: config().twitter.consumerSecret,
+                    access_token_key: twitterKey,
+                    access_token_secret: twitterSecret
+                });
+                twitter.updateStatus(postData.get("title") + ": " + config().url + "/" + postData.get("slug"), function (err) {
+                    postData.set("tweeted", err === null ? 0 : 1);
+                    deferred.resolve(postData);
+                });
+                return deferred.promise;
+            }).then(function (postData) {
+                return postData.save();
+            });
+        }
+        return postData;
+    },
+
     // #### Browse
 
     // **takes:** filter / pagination parameters
@@ -57,7 +90,7 @@ posts = {
         }
         var self = this;
         return canThis(self.user).edit.post(postData.id).then(function () {
-            return dataProvider.Post.edit(postData).then(function (result) {
+            return dataProvider.Post.edit(postData).then(posts.tweetPost).then(function (result) {
                 if (result) {
                     var omitted = result.toJSON();
                     omitted.author = _.omit(omitted.author, filteredUserAttributes);
@@ -91,7 +124,7 @@ posts = {
             return dataProvider.Post.add(postData);
         }, function () {
             return when.reject({errorCode: 403, message: 'You do not have permission to add posts.'});
-        });
+        }).then(posts.tweetPost);
     },
 
     // #### Destroy

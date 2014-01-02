@@ -18,7 +18,8 @@ var fixtures = {
             "status":           "published",
             "language":         "en_US",
             "meta_title":       null,
-            "meta_description": null
+            "meta_description": null,
+            "tweeted":          false
         }
     ],
 

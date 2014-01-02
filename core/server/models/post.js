@@ -19,7 +19,7 @@ Post = ghostBookshelf.Model.extend({
     permittedAttributes: [
         'id', 'uuid', 'title', 'slug', 'markdown', 'html', 'meta_title', 'meta_description',
         'featured', 'image', 'status', 'language', 'author_id', 'created_at', 'created_by', 'updated_at', 'updated_by',
-        'page', 'published_at', 'published_by'
+        'page', 'published_at', 'published_by', 'tweeted'
     ],
 
     defaults: function () {
