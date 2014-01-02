@@ -6,6 +6,24 @@ Visit the project's website at <http://ghost.org>!
 
 Full documentation is available at <http://docs.ghost.org>.
 
+### AdminRoot branch
+
+This branch provides the ability to configure the location of the admin pages in Ghost. See the discussion of this
+feature in the issue tracker of the official project: https://github.com/TryGhost/Ghost/issues/1150#issuecomment-31474290.
+
+This was "scratch an itch" implementation, but overall I think it is preferable to paramaterize routes in the application
+versus hardcoding them.
+
+To set the location of the admin pages, simply set "adminRoot" in the configuration file to a path without a trailing space.
+For instance:
+`
+{
+...
+adminRoot: '/dashboard';
+...
+}
+`
+
 ## Getting Involved
 
 Want to report a bug, request a feature, or help us build or translate Ghost? Check out our in depth guide to [Contributing to Ghost](https://github.com/TryGhost/Ghost/blob/master/CONTRIBUTING.md). We need all the help we can get! You can also join in with our [community](https://github.com/TryGhost/Ghost#community) to keep up-to-date and meet other Ghosters.
